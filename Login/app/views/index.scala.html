@@ -3,7 +3,7 @@
 @import helper._
 
 @main(title) {
-    @form(routes.Application.Login, 'class -> "accountcontainer accountcontainerform"){
+    @form(routes.Application.Login, 'class -> "accountcontainer accountcontainerform", 'onsubmit -> "return check();"){
         <h2>Bejelentkezés</h2>
         <div class="input-group" style="margin: 2% auto;">
             <span class="glyphicon glyphicon-user input-group-addon" id="basic-addon1"></span>
