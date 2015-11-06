@@ -1,5 +1,7 @@
 package controllers
 
+import java.util
+
 import play.api._
 import play.api.data._
 import play.api.data.Forms._
@@ -7,6 +9,11 @@ import play.api.mvc._
 
 import play.api.mvc.Cookie
 
+import scala.collection.mutable.ArrayBuffer
+
+object HashTable {
+  val list :ArrayBuffer[String] = new ArrayBuffer[String]()
+}
 
 class Application extends Controller {
 
@@ -27,7 +34,9 @@ class Application extends Controller {
   def Login = Action { implicit request =>
     loginForm.bindFromRequest.fold(
       formWithErrors => Redirect("Not succes"),
-      user => if(Authenticate(user)) Redirect("mainpage").withCookies(Cookie("user", user._1, Option(3600))) else Ok(views.html.index("Bejelentkezés", errMsg))
+      user => if(Authenticate(user)) {
+        Redirect("mainpage").withSession("user" -> user._1)
+      } else Ok(views.html.index("Bejelentkezés", errMsg))
     )
   }
 
@@ -52,10 +61,15 @@ class Application extends Controller {
   }
 
   def LoadMainPage = Action { implicit request =>
-    val usr =  request.cookies.get("user")
+    var name :String = null
+    request.session.get("user").map {
+      user => name = user
+    }.getOrElse {
+      name = null
+    }
 
-    if(usr != None && usr.get.value.length() != 0) {
-      Ok(views.html.mainpage("Főoldal", usr.get.value))
+    if(name != null) {
+      Ok(views.html.mainpage("Főoldal", name))
     }
     else {
       errMsg = "Bejelentkezés szükséges."
