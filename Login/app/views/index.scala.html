@@ -1,0 +1,23 @@
+@(title:String, message: String)
+
+@import helper._
+
+@main(title) {
+    @form(routes.Application.Login, 'class -> "accountcontainer accountcontainerform"){
+        <h2>Bejelentkezés</h2>
+        <div class="input-group" style="margin: 2% auto;">
+            <span class="glyphicon glyphicon-user input-group-addon" id="basic-addon1"></span>
+            <input name="usrname" id="usrname" type="text" class="form-control" placeholder="Felhasználó név" aria-describedby="basic-addon1">
+        </div>
+        <div class="input-group" style="margin: 2% auto;">
+            <span class="glyphicon glyphicon-paragraph input-group-addon" id="basic-addon1">*</span>
+            <input name="pwd" id="pwd" type="password" class="form-control" placeholder="********" pattern="\w{8}" title="8 character password">
+        </div>
+            <button type="submit" class="btn btn-default loginButton" style="float: right;">Bejelentkezés</button>
+
+        @if(message!=""){
+            <div class="alert alert-danger" style="margin: 75px auto" role="alert">@message</div>
+        }
+    }
+
+}
