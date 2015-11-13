@@ -1,0 +1,161 @@
+@(Title: String,products: List[Product], listedElement :Int, actualPage :Int, maxPage :Int, elementSize :Int)
+
+@import helper._
+@import scala.Int; var start=0; var end=1; var counter=1; var pageNo=0
+
+@main(Title) {
+<div class="container" >
+    <div class="page-header" style="text-align: center;">
+        <h2>Termék hozzáadás</h2>
+    </div>
+
+    <div id="beallitasok" style="margin: 1% auto;">
+        @form(routes.Application.search, 'class -> "input-group", 'style -> "width: 75%; float: left;" ){
+        <input id="name" name="name" type="text" class="form-control" placeholder="Termék neve...">
+
+           <span class="input-group-btn">
+               <button class="btn btn-default" type="submit">Keresés</button>
+              </span>
+        }
+
+        <div class="btn-group" style="float: right;">
+            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                @listedElement <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right">
+                <li><a href="sizedList?iNo=5">5</a></li>
+                <li><a href="sizedList?iNo=10">10</a></li>
+                <li><a href="sizedList?iNo=50">50</a></li>
+                <li><a href="sizedList?iNo=100">100</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="list-group" style="float: left; margin: 2% auto;">
+
+        @{counter = ((actualPage - 1) * listedElement) + 1}
+        @for(p <- products){
+        <div class="input-group" style="margin: 0 auto;">
+               <span class="input-group-addon">
+                   <input type="checkbox">
+               </span>
+            <a href="#" class="list-group-item" data-toggle="modal" data-target="#myModal">
+                <h4><b>@counter.</b> @p.name</h4>
+                <p>Készlet: @p.stockInHand</p>
+                <p>Ár: @p.price ft</p>
+            </a>
+            @{counter=counter+1}
+        </div>
+        @if(products.last != p) {
+        <hr style="border-top: 1px solid #000000;" />
+        }
+        }
+
+
+
+        <nav style="text-align: center;">
+            <ul class="pagination">
+
+                <li>
+                    @if(actualPage == 1){
+                    <a href="#" aria-label="Previous" style="color: gray; pointer-events: none; cursor: default;">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    } else {
+
+                    @if(actualPage - 10 < 0 ){
+                    <a href="paging?page=1" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    } else {
+                    <a href="paging?page=@{actualPage - 10}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                    }
+                    }
+                </li>
+
+                @{start = actualPage}
+                @{end = actualPage + maxPage}
+
+                @if(elementSize%listedElement == 0) {
+                @{pageNo = elementSize/listedElement }
+                } else {
+                @{pageNo = elementSize/listedElement + 1 }
+                }
+
+                @if(actualPage >= 5) {
+                @{start = actualPage - 4}
+                @{end = start + maxPage}
+                } else {
+                @{start = 1}
+                @{end = start + maxPage}
+                }
+
+                @if(actualPage > pageNo-5) {
+                @{end = actualPage + pageNo-actualPage + 1}
+                @{start = end - maxPage}
+                }
+
+                @if(start < 1){
+                @{start = 1}
+                }
+
+                @if(end > pageNo){
+                @{end = pageNo}
+                }
+
+                @if(end < start){
+                @{end = start + 1}
+                }
+
+                @for(i <- List.range(start, end+1)){
+                @if(i == actualPage){
+                <li class="active"><a href="#page=i">@i</a></li>
+                } else {
+                <li><a href="paging?page=@i">@i</a></li>
+                }
+                }
+
+                <li>
+                    @if(actualPage == pageNo){
+                    <a href="#" aria-label="Next" style="color: gray; pointer-events: none; cursor: default;">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    } else {
+
+                    @if(actualPage + 10 > pageNo){
+                    <a href="paging?page=@pageNo" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    } else {
+                    <a href="paging?page=@{actualPage + 10}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                    }
+                    }
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+}

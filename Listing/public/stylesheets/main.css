@@ -1,0 +1,16 @@
+.accountcontainer {
+  width: 60%;
+  text-align: center;
+}
+
+.accountcontainerform {
+  margin: 10% auto;
+}
+
+body {
+  background: #F5F6CE;
+}
+
+.accountcontainer > .loginbutton {
+  text-align: right;
+}
